@@ -86,14 +86,14 @@ class MeasurementProtocol {
         $getString = $this->endpoint;
         $getString .= $this->getQueryParams();
 
-        var_dump($getString);
+        //var_dump($getString);
         $ch = curl_init($getString); // such as http://example.com/example.xml
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         $data = curl_exec($ch);
         curl_close($ch);
 
-        var_dump($data);
+        //var_dump($data);
         return $data;
     }
 
@@ -106,7 +106,7 @@ class MeasurementProtocol {
      * который будет отправлен
      * @return string
      */
-    private function getQueryParams() {
+    public function getQueryParams() {
         $params = array(
             'v' => $this->settings->getVersion(),
             't' => $this->settings->getHitType(),
@@ -131,10 +131,8 @@ class MeasurementProtocol {
         if ($this->clearCacheFlag) {
             $params['z'] = time() . '-' . rand(2, 100);
         }
-        print_r($params);
+        //print_r($params);
         return http_build_query($params);
-        //&ti=T12345&ta=Google%20Store%20-%20Online&tr=37.39&tt=2.85&ts=5.34&tcc=SUMMER2013&pa=purchase&pr1id=P12345&pr1nm=Android%20Warhol%20T-Shirt&pr1ca=Apparel&pr1br=Google&pr1va=Black&pr1ps=1
-        return "cid=c419a05d-0e07-4502-ae26-2f269abb1a4c&dh=mydemo.com&dp=%2Fhome2&dt=homepage&il1nm=Search%20Results&il1pi1id=P12345&il1pi1nm=Android%20Warhol%20T-Shirt&il1pi1ca=Apparel%2FT-Shirts&il1pi1br=Google&il1pi1va=Black&il1pi1ps=1&il1pi1cd1=Member&il2nm=Recommended%20Products&il2pi1nm=Yellow%20T-Shirt&il2pi2nm=Red%20T-Shirt&hl=ru";
     }
 }
 
@@ -196,7 +194,7 @@ class MeasurementProtocolSettings {
         $this->v = 1;
 
         if (isset($_COOKIE['_ga'])) {
-            $cid = $_COOKIE['_ga'];
+            $cid = str_replace('GA1.2.', '', $_COOKIE['_ga']);
         } else {
             $cid = $this->gaGenUUID();
         }
@@ -625,6 +623,7 @@ class MeasurementProtocolEnhancedEcommerceTransaction {
     public function toArray() {
         $array = array();
 
+        $array['pa'] = $this->pa;
         $array['ti'] = $this->ti;
         $array['ta'] = $this->ta;
         $array['tr'] = $this->tr;
@@ -640,6 +639,7 @@ class MeasurementProtocolEnhancedEcommerceTransaction {
             $array['pr' . $arrayKey . 'br'] = $product->getBrand();
             $array['pr' . $arrayKey . 'va'] = $product->getVariant();
             $array['pr' . $arrayKey . 'ps'] = $product->getPosition();
+            $array['pr' . $arrayKey . 'qt'] = $product->getQuantity();
         }
         return $array;
     }
@@ -653,6 +653,7 @@ class MeasurementProtocolProduct {
     private $br;
     private $va;
     private $ps;
+    private $qt;
 
     public function setId($id) {
         $this->id = $id;
@@ -670,6 +671,15 @@ class MeasurementProtocolProduct {
 
     public function getName() {
         return $this->nm;
+    }
+
+    public function setQuantity($qt) {
+        $this->qt = $qt;
+        return $this;
+    }
+
+    public function getQuantity() {
+        return $this->qt;
     }
 
     public function setCategory($ca) {
