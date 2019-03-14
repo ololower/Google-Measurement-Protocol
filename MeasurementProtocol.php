@@ -388,7 +388,7 @@ class MeasurementProtocolEvent {
      * @param $event
      * @return string
      */
-    public function getEventCategory($event) {
+    public function getEventCategory() {
         return $this->ec;
     }
 
@@ -397,7 +397,7 @@ class MeasurementProtocolEvent {
      * @param $action
      * @return string
      */
-    public function getEventAction($action) {
+    public function getEventAction() {
         return $this->ea;
     }
 
@@ -406,7 +406,7 @@ class MeasurementProtocolEvent {
      * @param $value
      * @return string
      */
-    public function getEventValue($value) {
+    public function getEventValue() {
         return $this->ev;
     }
 
@@ -640,6 +640,7 @@ class MeasurementProtocolEnhancedEcommerceTransaction {
             $array['pr' . $arrayKey . 'va'] = $product->getVariant();
             $array['pr' . $arrayKey . 'ps'] = $product->getPosition();
             $array['pr' . $arrayKey . 'qt'] = $product->getQuantity();
+            $array['pr' . $arrayKey . 'pr'] = $product->getPrice();
         }
         return $array;
     }
@@ -654,6 +655,7 @@ class MeasurementProtocolProduct {
     private $va;
     private $ps;
     private $qt;
+    private $pr;
 
     public function setId($id) {
         $this->id = $id;
@@ -716,5 +718,14 @@ class MeasurementProtocolProduct {
 
     public function getPosition() {
         return $this->ps;
+    }
+
+    public function setPrice($pr) {
+        $this->pr = $pr;
+        return $this;
+    }
+
+    public function getPrice() {
+        return $this->pr;
     }
 }
